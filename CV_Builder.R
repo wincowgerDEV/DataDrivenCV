@@ -7,29 +7,36 @@ library(knitr)
 library(tinytex)
 
 googlesheets4::gs4_deauth()
-data <- read_sheet("https://docs.google.com/spreadsheets/d/1E3_Z900RAWbRnThNNu-_DXQqZN6qHkD2wN7ZYGmKt34/edit?usp=sharing") %>%
+
+file <- read_sheet("https://docs.google.com/spreadsheets/d/1E3_Z900RAWbRnThNNu-_DXQqZN6qHkD2wN7ZYGmKt34/edit?usp=sharing") %>%
     mutate(ShortDescription = ifelse(!is.na(Link), paste0(ShortDescription, " Link: (", Link, ")"), ShortDescription)) %>%
     mutate(Date = ifelse(!is.na(StartYear) & !is.na(EndYear), glue::glue('{StartMonth} {StartYear} --> {EndMonth} {EndYear}',.na = ''), ifelse(!is.na(StartYear), glue::glue('{StartMonth} {StartYear}',.na = ''), "")))
 
-is.na(data$EndYear)
+metadata <- file %>%
+    filter(Topic == "(CV Metadata)")
+
+data <- file %>%
+    filter(Topic != "(CV Metadata)")
+
+download.file(metadata[metadata$Subtopic == "profilepic", ]$ShortDescription, "image.jpg", mode = "wb")
 
 yaml <- paste("---",
             "docname: CV",
-            "name: Win",
-            "surname: Cowger",
-            'position: "Environmental Scientist"',
-            'address: "Moore Institute for Plastic Pollution Research"',
-            'profilepic: "./Professional_photo.jpg"',
-            "phone: +1 515 298 3869",
-            "www: wincowger.com",
-            'email: "wincowger@gmail.com"',
-            "twitter: Win_OpenData",
-            "github: wincowgerDEV",
-            "orcid: 0000-0001-9226-3104",
-            "linkedin: win-cowger-6273b0136",
+            paste0("name: ", metadata[metadata$Subtopic == "name", ]$ShortDescription),
+            paste0("surname: ", metadata[metadata$Subtopic == "surname", ]$ShortDescription),
+            paste0('position: "', metadata[metadata$Subtopic == "position", ]$ShortDescription, '"'),
+            paste0('address: "', metadata[metadata$Subtopic == "address", ]$ShortDescription, '"'),
+            paste0('profilepic: "', "image.jpg", '"'),
+            paste0("phone: ", metadata[metadata$Subtopic == "name", ]$ShortDescription),
+            paste0("www: ", metadata[metadata$Subtopic == "www", ]$ShortDescription),
+            paste0('email: "', metadata[metadata$Subtopic == "email", ]$ShortDescription, '"'),
+            paste0("twitter: ", metadata[metadata$Subtopic == "twitter", ]$ShortDescription),
+            paste0("github: ", metadata[metadata$Subtopic == "github", ]$ShortDescription),
+            paste0("orcid: ", metadata[metadata$Subtopic == "orcid", ]$ShortDescription),
+            paste0("linkedin: ", metadata[metadata$Subtopic == "linkedin", ]$ShortDescription),
             paste0("date: ", "\"`r format(Sys.time(), '%B %Y')`\""),
-            'headcolor: "689d6a"',
-            'aboutme: "Win is working to use science, data, and software to tackle the global challenges of plastic pollution and waste."',
+            paste0('headcolor: "', metadata[metadata$Subtopic == "headcolor", ]$ShortDescription, '"'),
+            paste0('aboutme: "', metadata[metadata$Subtopic == "aboutme", ]$ShortDescription, '"'),
             "output: vitae::awesomecv" ,
             #"  vitae::markdowncv:",
             #"    theme: davewhipp",
@@ -48,10 +55,6 @@ yaml <- paste("---",
             "```",
             sep = "\n")
 
-
-wd <- "G:/My Drive/MooreInstitute/Admin/Code/AwesomeCV"
-
-setwd(wd)
 
 collection <- distinct(data, Topic, Subtopic)
 
@@ -85,7 +88,6 @@ for(row in 1:nrow(collection)){
     previous_Topic = Topic2 
 }
 
-write(yaml_to_loop, file = paste0(wd, "/AwesomeCV.Rmd"), append = F)
+write(yaml_to_loop, file = "./AwesomeCV.Rmd", append = F)
 
 rmarkdown::render('AwesomeCV.Rmd')
-awesomecv(paste0(wd, "/AwesomeCV.Rmd"))
