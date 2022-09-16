@@ -1,0 +1,274 @@
+---
+docname: CV
+name: Win
+surname: Cowger
+position: "Environmental Scientist"
+address: "Moore Institute for Plastic Pollution Research"
+profilepic: "./Professional_photo.jpg"
+phone: +1 515 298 3869
+www: wincowger.com
+email: "wincowger@gmail.com"
+twitter: Win_OpenData
+github: wincowgerDEV
+orcid: 0000-0001-9226-3104
+linkedin: win-cowger-6273b0136
+date: "`r format(Sys.time(), '%B %Y')`"
+headcolor: "689d6a"
+aboutme: "Win is working to use science, data, and software to tackle the global challenges of plastic pollution and waste."
+output: vitae::awesomecv
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(vitae)
+library(googlesheets4)
+library(dplyr)
+library(glue)
+googlesheets4::gs4_deauth()
+data <- read_sheet('https://docs.google.com/spreadsheets/d/1E3_Z900RAWbRnThNNu-_DXQqZN6qHkD2wN7ZYGmKt34/edit?usp=sharing') %>%
+    mutate(ShortDescription = ifelse(!is.na(Link), paste0(ShortDescription, ' Link: (', Link, ')'), ShortDescription)) %>%
+    mutate(Date = ifelse(!is.na(StartYear) & !is.na(EndYear), glue::glue('{StartMonth} {StartYear} --> {EndMonth} {EndYear}',.na = ''), ifelse(!is.na(StartYear), glue::glue('{StartMonth} {StartYear}',.na = ''), '')))
+```
+# Education
+
+```{r}
+data %>%
+filter(Topic == "Education") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+# Employment
+
+```{r}
+data %>%
+filter(Topic == "Employment") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+# Service
+## University
+```{r}
+data %>%
+filter(Topic == "Service"& Subtopic == "University") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Nonprofit
+```{r}
+data %>%
+filter(Topic == "Service"& Subtopic == "Nonprofit") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Government Organizations
+```{r}
+data %>%
+filter(Topic == "Service"& Subtopic == "Government Organizations") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Professional Societies
+```{r}
+data %>%
+filter(Topic == "Service"& Subtopic == "Professional Societies") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Reviewing for Journals
+```{r}
+data %>%
+filter(Topic == "Service"& Subtopic == "Reviewing for Journals") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Society Memberships
+```{r}
+data %>%
+filter(Topic == "Service"& Subtopic == "Society Memberships") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Working Groups
+```{r}
+data %>%
+filter(Topic == "Service"& Subtopic == "Working Groups") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+# Publications
+## Peer-reviewed Articles
+```{r}
+data %>%
+filter(Topic == "Publications"& Subtopic == "Peer-reviewed Articles") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Book Chapters
+```{r}
+data %>%
+filter(Topic == "Publications"& Subtopic == "Book Chapters") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Conference Proceedings
+```{r}
+data %>%
+filter(Topic == "Publications"& Subtopic == "Conference Proceedings") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Dissertation
+```{r}
+data %>%
+filter(Topic == "Publications"& Subtopic == "Dissertation") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Thesis
+```{r}
+data %>%
+filter(Topic == "Publications"& Subtopic == "Thesis") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Invited Editorials
+```{r}
+data %>%
+filter(Topic == "Publications"& Subtopic == "Invited Editorials") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Acknowledgement on Publications
+```{r}
+data %>%
+filter(Topic == "Publications"& Subtopic == "Acknowledgement on Publications") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## In the News
+```{r}
+data %>%
+filter(Topic == "Publications"& Subtopic == "In the News") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Artistic Contributions
+```{r}
+data %>%
+filter(Topic == "Publications"& Subtopic == "Artistic Contributions") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+# Funding
+## Ongoing
+```{r}
+data %>%
+filter(Topic == "Funding"& Subtopic == "Ongoing") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Completed
+```{r}
+data %>%
+filter(Topic == "Funding"& Subtopic == "Completed") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+# Teaching
+## Course Instructor
+```{r}
+data %>%
+filter(Topic == "Teaching"& Subtopic == "Course Instructor") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Workshop Facilitator
+```{r}
+data %>%
+filter(Topic == "Teaching"& Subtopic == "Workshop Facilitator") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Professional Development
+```{r}
+data %>%
+filter(Topic == "Teaching"& Subtopic == "Professional Development") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+# Mentoring
+
+```{r}
+data %>%
+filter(Topic == "Mentoring") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+# Presentations
+## Invited
+```{r}
+data %>%
+filter(Topic == "Presentations"& Subtopic == "Invited") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Conference Platform
+```{r}
+data %>%
+filter(Topic == "Presentations"& Subtopic == "Conference Platform") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Conference Poster
+```{r}
+data %>%
+filter(Topic == "Presentations"& Subtopic == "Conference Poster") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+# Software Competencies
+## Languages
+```{r}
+data %>%
+filter(Topic == "Software Competencies"& Subtopic == "Languages") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+## Programs
+```{r}
+data %>%
+filter(Topic == "Software Competencies"& Subtopic == "Programs") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+# Lab Hardwater Competencies
+
+```{r}
+data %>%
+filter(Topic == "Lab Hardwater Competencies") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+# Field Measurement Competencies
+
+```{r}
+data %>%
+filter(Topic == "Field Measurement Competencies") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+# Certificates
+
+```{r}
+data %>%
+filter(Topic == "Certificates") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
+# Awards
+
+```{r}
+data %>%
+filter(Topic == "Awards") %>%
+detailed_entries(what = `ShortDescription`, when = Date, with = SubSubtopic, where = Location, why = LongDescription)
+```
+
