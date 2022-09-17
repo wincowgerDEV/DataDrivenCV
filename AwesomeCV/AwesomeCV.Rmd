@@ -4,7 +4,7 @@ name: Win
 surname: Cowger
 position: "Environmental Scientist"
 address: "Moore Institute for Plastic Pollution Research"
-profilepic: "image.jpg"
+
 phone: Win
 www: wincowger.com
 email: "wincowger@gmail.com"

@@ -57,6 +57,7 @@ readUrl <- function(url) {
             # in case the "try" part was completed successfully
             
             download.file(url, "AwesomeCV/image.jpg", mode = "wb")
+            return(F)
             
             # The return value of `readLines()` is the actual value 
             # that will be returned in case there is no condition 
@@ -66,31 +67,14 @@ readUrl <- function(url) {
             # for the condition handlers for warnings and error below)
         },
         error=function(cond) {
-            message(paste("URL does not seem to exist:", url))
-            message("Here's the original error message:")
-            message(cond)
-            # Choose a return value in case of error
             return(T)
         },
         warning=function(cond) {
-            message(paste("URL caused a warning:", url))
-            message("Here's the original warning message:")
-            message(cond)
-            # Choose a return value in case of warning
             return(T)
         },
         finally={
-            # NOTE:
-            # Here goes everything that should be executed at the end,
-            # regardless of success or error.
-            # If you want more than one expression to be executed, then you 
-            # need to wrap them in curly brackets ({...}); otherwise you could
-            # just have written 'finally=<expression>' 
-            message(paste("Processed URL:", url))
-            message("Some other message at the end")
         }
     )    
-    return(out)
 }
 
 

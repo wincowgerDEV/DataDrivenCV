@@ -31,7 +31,7 @@ ui <- dashboardPage(
                 icon = icon("sliders-h")
             ),
             menuItem(
-                "Image Query",
+                "CV Generator",
                 tabName = "item2",
                 icon = icon("file")
             )
@@ -43,17 +43,22 @@ ui <- dashboardPage(
                 tabName = "item1",
                 box(
                     title = "Overview",
-                    h3("Welcome to the microplastic taxonomy page, this is a place to improve your use of visual microscopy in microplastic identification. Go to the image query tab to get started querying our database of microplastic images by color, morphology, and polymer types."),
+                    p("Welcome to the Data Driven CV Portal. This tool allows you to use a Google Sheet to format and automatically create your professional CV. Credit to the Vitae package for doing most of the heavy lifting here. I just wrapped their package up in a web gui with a little bit of user experience and controlled logic in the sheet. To get started, go to the CV Generator tab on the left sidebar and look at the example CV."),
                     width = 12
                 ),
                 box(
                     title = "Contribute",
                     collapsed = T,
-                    h3("You can help us build this database of microplastic imagery by filling out this form if you just have a few images to share:"),
-                    HTML('<a class="btn btn-info" href = "https://forms.gle/kA4ynuHsbu7VWkZm7" role = "button" >Form</a>'),
-                    h3("If you over 50 images to share, please contact wincowger@gmail.com to share a zip folder of images. All we need is a folder with images that have unique names and a spreadsheet that lists the name of the image and relevant metadata following the google form information."),
+                    p("You can help us build this tool, it is fully open source:"),
+                    HTML('<a class="btn btn-info" href = "https://github.com/wincowgerDEV/DataDrivenCV" role = "button" >Github</a>'),
                     width = 12
-                    
+                ),
+                box(
+                    title = "Report Issue",
+                    collapsed = T,
+                    p("If you have any issues with a particular sheet you are using please create an issue here:"),
+                    HTML('<a class="btn btn-info" href = "https://github.com/wincowgerDEV/DataDrivenCV/issues" role = "button" >Issues</a>'),
+                    width = 12
                 )
             ),
             tabItem(
@@ -62,7 +67,7 @@ ui <- dashboardPage(
                     box(
                         textInput("sheet_link", "Google Sheet Link", "https://docs.google.com/spreadsheets/d/1E3_Z900RAWbRnThNNu-_DXQqZN6qHkD2wN7ZYGmKt34/edit?usp=sharing"),
                         actionButton("build_report", "Build CV", icon = icon("file")),
-                        downloadButton("download_report", "Download Report", style = "background-color: #28a745;"),
+                        downloadButton("download_report", "Download CV", style = "background-color: #28a745;"),
                         width = 4
                     ), 
                     box(
@@ -82,10 +87,18 @@ server <- function(input, output) {
     values <- reactiveVal()
     observeEvent(input$build_report, {
         if(!testsheet(input$sheet_link)){
-            cv_builder(input$sheet_link)
-            file.copy("AwesomeCV/AwesomeCV.pdf", "www/CV.pdf", overwrite = T)
-            values(NULL)
-            values(tags$iframe(style="height:600px; width:100%", src="CV.pdf"))
+            withProgress(message = 'CV Generation in Progress',
+                         detail = 'This may take a minute...', min = 0, max = 4, value = 1, {
+                             cv_builder(input$sheet_link)
+                             incProgress(1/4)
+                             file.copy("AwesomeCV/AwesomeCV.pdf", "www/CV.pdf", overwrite = T)
+                             incProgress(2/4)
+                             values(NULL)
+                             incProgress(3/4)
+                             values(tags$iframe(style="height:600px; width:100%", src="CV.pdf"))
+                             incProgress(4/4)
+                         })
+            
             
         }
         else{
