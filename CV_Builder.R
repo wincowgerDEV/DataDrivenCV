@@ -4,6 +4,7 @@ library(googlesheets4)
 library(dplyr)
 library(glue)
 library(knitr)
+library(rmarkdown)
 library(tinytex)
 
 #look <- testsheet("www")
@@ -55,7 +56,7 @@ readUrl <- function(url) {
             # 'tryCatch()' will return the last evaluated expression 
             # in case the "try" part was completed successfully
             
-            download.file(url, "image.jpg", mode = "wb")
+            download.file(url, "AwesomeCV/image.jpg", mode = "wb")
             
             # The return value of `readLines()` is the actual value 
             # that will be returned in case there is no condition 
@@ -178,9 +179,9 @@ cv_builder <- function(x){
         previous_Topic = Topic2 
     }
     
-    write(yaml_to_loop, file = "./AwesomeCV.Rmd", append = F)
+    write(yaml_to_loop, file = "AwesomeCV/AwesomeCV.Rmd", append = F)
     
-    rmarkdown::render('AwesomeCV.Rmd')
+    rmarkdown::render('AwesomeCV/AwesomeCV.Rmd')
 }
 
 

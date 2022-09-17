@@ -81,7 +81,7 @@ server <- function(input, output) {
     observeEvent(input$build_report, {
         if(!testsheet(input$sheet_link)){
             cv_builder(input$sheet_link)
-            file.copy("AwesomeCV.pdf", "www/CV.pdf", overwrite = T)
+            file.copy("AwesomeCV/AwesomeCV.pdf", "www/CV.pdf", overwrite = T)
             values(NULL)
             values(tags$iframe(style="height:600px; width:100%", src="CV.pdf"))
             

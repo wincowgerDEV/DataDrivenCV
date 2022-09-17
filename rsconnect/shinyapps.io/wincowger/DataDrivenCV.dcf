@@ -1,0 +1,13 @@
+name: DataDrivenCV
+title: DataDrivenCV
+username:
+account: wincowger
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7038919
+bundleId: 6310935
+url: https://wincowger.shinyapps.io/DataDrivenCV/
+when: 1663377417.33789
+lastSyncTime: 1663377417.3379
+asMultiple: FALSE
+asStatic: FALSE
