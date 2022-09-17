@@ -6,6 +6,45 @@ library(glue)
 library(knitr)
 library(tinytex)
 
+#look <- testsheet("www")
+testsheet <- function(url) {
+    tryCatch(
+        {
+            # Just to highlight: if you want to use more than one 
+            # R expression in the "try" part then you'll have to 
+            # use curly brackets.
+            # 'tryCatch()' will return the last evaluated expression 
+            # in case the "try" part was completed successfully
+            
+            read_sheet(url)
+            return(F)
+            
+            # The return value of `readLines()` is the actual value 
+            # that will be returned in case there is no condition 
+            # (e.g. warning or error). 
+            # You don't need to state the return value via `return()` as code 
+            # in the "try" part is not wrapped inside a function (unlike that
+            # for the condition handlers for warnings and error below)
+        },
+        error=function(cond) {
+            # Choose a return value in case of error
+            return(T)
+        },
+        warning=function(cond) {
+            # Choose a return value in case of warning
+            return(T)
+        },
+        finally={
+            # NOTE:
+            # Here goes everything that should be executed at the end,
+            # regardless of success or error.
+            # If you want more than one expression to be executed, then you 
+            # need to wrap them in curly brackets ({...}); otherwise you could
+            # just have written 'finally=<expression>' 
+        }
+    )    
+}
+
 
 readUrl <- function(url) {
     out <- tryCatch(
@@ -30,14 +69,14 @@ readUrl <- function(url) {
             message("Here's the original error message:")
             message(cond)
             # Choose a return value in case of error
-            return(F)
+            return(T)
         },
         warning=function(cond) {
             message(paste("URL caused a warning:", url))
             message("Here's the original warning message:")
             message(cond)
             # Choose a return value in case of warning
-            return(F)
+            return(T)
         },
         finally={
             # NOTE:
@@ -52,6 +91,9 @@ readUrl <- function(url) {
     )    
     return(out)
 }
+
+
+#cv_builder("https://docs.google.com/spreadsheets/d/1E3_Z900RAWbRnThNNu-_DXQqZN6qHkD2wN7ZYGmKt34/edit?usp=sharing")
 
 cv_builder <- function(x){
     googlesheets4::gs4_deauth()
@@ -74,7 +116,7 @@ cv_builder <- function(x){
                   paste0("surname: ", metadata[metadata$Subtopic == "surname", ]$ShortDescription),
                   paste0('position: "', metadata[metadata$Subtopic == "position", ]$ShortDescription, '"'),
                   paste0('address: "', metadata[metadata$Subtopic == "address", ]$ShortDescription, '"'),
-                  paste0('profilepic: "', ifelse(test == 0, "image.jpg", ""), '"'),
+                  ifelse(test == 0,paste0('profilepic: "',  "image.jpg", "", '"'), ""),
                   paste0("phone: ", metadata[metadata$Subtopic == "name", ]$ShortDescription),
                   paste0("www: ", metadata[metadata$Subtopic == "www", ]$ShortDescription),
                   paste0('email: "', metadata[metadata$Subtopic == "email", ]$ShortDescription, '"'),
