@@ -7,6 +7,52 @@ library(knitr)
 library(tinytex)
 
 
+readUrl <- function(url) {
+    out <- tryCatch(
+        {
+            # Just to highlight: if you want to use more than one 
+            # R expression in the "try" part then you'll have to 
+            # use curly brackets.
+            # 'tryCatch()' will return the last evaluated expression 
+            # in case the "try" part was completed successfully
+            
+            download.file(url, "image.jpg", mode = "wb")
+            
+            # The return value of `readLines()` is the actual value 
+            # that will be returned in case there is no condition 
+            # (e.g. warning or error). 
+            # You don't need to state the return value via `return()` as code 
+            # in the "try" part is not wrapped inside a function (unlike that
+            # for the condition handlers for warnings and error below)
+        },
+        error=function(cond) {
+            message(paste("URL does not seem to exist:", url))
+            message("Here's the original error message:")
+            message(cond)
+            # Choose a return value in case of error
+            return(F)
+        },
+        warning=function(cond) {
+            message(paste("URL caused a warning:", url))
+            message("Here's the original warning message:")
+            message(cond)
+            # Choose a return value in case of warning
+            return(F)
+        },
+        finally={
+            # NOTE:
+            # Here goes everything that should be executed at the end,
+            # regardless of success or error.
+            # If you want more than one expression to be executed, then you 
+            # need to wrap them in curly brackets ({...}); otherwise you could
+            # just have written 'finally=<expression>' 
+            message(paste("Processed URL:", url))
+            message("Some other message at the end")
+        }
+    )    
+    return(out)
+}
+
 cv_builder <- function(x){
     googlesheets4::gs4_deauth()
     
@@ -20,7 +66,7 @@ cv_builder <- function(x){
     data <- file %>%
         filter(Topic != "(CV Metadata)")
     
-    download.file(metadata[metadata$Subtopic == "profilepic", ]$ShortDescription, "image.jpg", mode = "wb")
+    test <-  readUrl(metadata[metadata$Subtopic == "profilepic", ]$ShortDescription)
     
     yaml <- paste("---",
                   "docname: CV",
@@ -28,7 +74,7 @@ cv_builder <- function(x){
                   paste0("surname: ", metadata[metadata$Subtopic == "surname", ]$ShortDescription),
                   paste0('position: "', metadata[metadata$Subtopic == "position", ]$ShortDescription, '"'),
                   paste0('address: "', metadata[metadata$Subtopic == "address", ]$ShortDescription, '"'),
-                  paste0('profilepic: "', "image.jpg", '"'),
+                  paste0('profilepic: "', ifelse(test == 0, "image.jpg", ""), '"'),
                   paste0("phone: ", metadata[metadata$Subtopic == "name", ]$ShortDescription),
                   paste0("www: ", metadata[metadata$Subtopic == "www", ]$ShortDescription),
                   paste0('email: "', metadata[metadata$Subtopic == "email", ]$ShortDescription, '"'),
@@ -51,7 +97,7 @@ cv_builder <- function(x){
                   "library(dplyr)",
                   "library(glue)",
                   "googlesheets4::gs4_deauth()",
-                  "data <- read_sheet('https://docs.google.com/spreadsheets/d/1E3_Z900RAWbRnThNNu-_DXQqZN6qHkD2wN7ZYGmKt34/edit?usp=sharing') %>%
+                  "data <- read_sheet('",x, "') %>%
     mutate(ShortDescription = ifelse(!is.na(Link), paste0(ShortDescription, ' Link: (', Link, ')'), ShortDescription)) %>%
     mutate(Date = ifelse(!is.na(StartYear) & !is.na(EndYear), glue::glue('{StartMonth} {StartYear} --> {EndMonth} {EndYear}',.na = ''), ifelse(!is.na(StartYear), glue::glue('{StartMonth} {StartYear}',.na = ''), '')))" ,
                   "```",
