@@ -38,6 +38,10 @@ ui <- dashboardPage(
         )
     ),
     dashboardBody(
+        tags$head(
+            #Ethical Ads
+            HTML('<script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>')
+        ),
         tabItems(
             tabItem(
                 tabName = "item1",
@@ -59,7 +63,9 @@ ui <- dashboardPage(
                     p("If you have any issues with a particular sheet you are using please create an issue here:"),
                     HTML('<a class="btn btn-info" href = "https://github.com/wincowgerDEV/DataDrivenCV/issues" role = "button" >Issues</a>'),
                     width = 12
-                )
+                ), 
+                HTML('<!-- Show a text ad -->
+                         <div class = "dark raised" data-ea-publisher="openanalysisorg" data-ea-type="image" data-ea-style="stickybox"></div>')
             ),
             tabItem(
                 tabName = "item2",
@@ -74,7 +80,9 @@ ui <- dashboardPage(
                     uiOutput("pdf"),
                     width = 8
                     )
-                )
+                ),
+                fluidRow(HTML('<!-- Show a text ad -->
+                         <div class = "dark raised" data-ea-publisher="openanalysisorg" data-ea-type="image" data-ea-style="stickybox"></div>'))
             )
         )
     )
