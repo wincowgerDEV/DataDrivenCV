@@ -12,6 +12,8 @@ library(shinyWidgets)
 
 source("CV_Builder.R")
 
+googlesheets4::gs4_deauth()
+
 ui <- dashboardPage(
     dashboardHeader(title = "Data Driven CV"),
     dashboardSidebar(
