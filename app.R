@@ -76,17 +76,20 @@ ui <- dashboardPage(
                                textInput("sheet_link", "Google Sheet Link", "https://docs.google.com/spreadsheets/d/1E3_Z900RAWbRnThNNu-_DXQqZN6qHkD2wN7ZYGmKt34/edit?usp=sharing"),
                                actionButton("build_report", "Build CV", icon = icon("file")),
                                downloadButton("download_report", "Download CV", style = "background-color: #28a745;"),
-                               width = 4
+                               width = 12
                            ),
                            box(
+                               title = "Data Driven CV",
                                DT::DTOutput(outputId = "table"),
-                               width = 4
+                               style = 'overflow-x: scroll',
+                               maximizable = T,
+                               width = 12
                            )
                            ), 
                     column(width = 8,
                            box(
                             uiOutput("pdf"),
-                            width = 8
+                            width = 12
                             )
                            )
                 ),
