@@ -49,6 +49,7 @@ ui <- dashboardPage(
                 box(
                     title = "Overview",
                     p("Welcome to the Data Driven CV Portal. This tool allows you to use a Google Sheet to format and automatically create your professional CV. Credit to the Vitae package for doing most of the heavy lifting here. I just wrapped their package up in a web gui with a little bit of user experience and controlled logic in the sheet. To get started, go to the CV Generator tab on the left sidebar and look at the example CV."),
+                    HTML('<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/SRQBRVlfFJU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'),
                     width = 12
                 ),
                 box(
