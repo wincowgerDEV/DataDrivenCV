@@ -146,7 +146,7 @@ cv_builder <- function(x){
                   paste0('position: "', metadata[metadata$Subtopic == "position", ]$ShortDescription, '"'),
                   paste0('address: "', metadata[metadata$Subtopic == "address", ]$ShortDescription, '"'),
                   ifelse(test == 0,paste0('profilepic: "',  "image.jpg", "", '"'), ""),
-                  paste0("phone: ", metadata[metadata$Subtopic == "name", ]$ShortDescription),
+                  paste0("phone: ", metadata[metadata$Subtopic == "phone", ]$ShortDescription),
                   paste0("www: ", metadata[metadata$Subtopic == "www", ]$ShortDescription),
                   paste0('email: "', metadata[metadata$Subtopic == "email", ]$ShortDescription, '"'),
                   paste0("twitter: ", metadata[metadata$Subtopic == "twitter", ]$ShortDescription),
@@ -169,7 +169,7 @@ cv_builder <- function(x){
                   "library(glue)",
                   "googlesheets4::gs4_deauth()",
                   "data <- read_sheet('",x, "') %>%
-    mutate(ShortDescription = ifelse(!is.na(Link), paste0(ShortDescription, ' Link: (', Link, ')'), ShortDescription)) %>%
+    mutate(ShortDescription = ifelse(!is.na(Link), paste0(ShortDescription, ' (Link: ', Link, ')'), ShortDescription)) %>%
     mutate(Date = ifelse(!is.na(StartYear) & !is.na(EndYear), glue::glue('{StartMonth} {StartYear} --> {EndMonth} {EndYear}',.na = ''), ifelse(!is.na(StartYear), glue::glue('{StartMonth} {StartYear}',.na = ''), '')))" ,
                   "```",
                   sep = "\n")

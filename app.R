@@ -66,35 +66,54 @@ ui <- dashboardPage(
                     width = 12
                 ), 
                 HTML('<!-- Show a text ad -->
-                         <div class = "dark raised" data-ea-publisher="openanalysisorg" data-ea-type="image" data-ea-style="stickybox"></div>')
+                         <div class = "dark raised" id = "CV_home" data-ea-publisher="openanalysisorg" data-ea-type="image" data-ea-style="stickybox"></div>')
             ),
             tabItem(
                 tabName = "item2",
                 fluidRow(
                     column(width = 4, 
+                           popover(
                            box(
+                               title = "Data Input",
                                textInput("sheet_link", "Google Sheet Link", "https://docs.google.com/spreadsheets/d/1E3_Z900RAWbRnThNNu-_DXQqZN6qHkD2wN7ZYGmKt34/edit?usp=sharing"),
                                actionButton("build_report", "Build CV", icon = icon("file")),
-                               downloadButton("download_report", "Download CV", style = "background-color: #28a745;"),
                                width = 12
                            ),
+                           title = "Data Upload",
+                           content = "A test google sheet link is provided that you can copy and paste into the browser to inspect the format expected by the tool or you can click Build CV button to see how the tool performs. Replace the URL link with a link to your own google sheet cv formatted in the same way as the one at the link and click Build CV to build your own CV."
+                           ),
+                           popover(
                            box(
-                               title = "Data Driven CV",
+                               title = "Data CV",
+                               id = "data_viewer",
                                DT::DTOutput(outputId = "table"),
                                style = 'overflow-x: scroll',
                                maximizable = T,
+                               collapsed = T,
                                width = 12
+                           ),
+                           title = "Spreadsheet format of CV", 
+                           content = "This is a searchable version of your google sheet that is uploaded by the tool. You can view this in full screen mode with the button in the top right."
                            )
                            ), 
                     column(width = 8,
+                           popover(
                            box(
+                            title = "PDF CV Generated",
+                            id = "pdf_viewer",
+                            downloadButton("download_report", "Download CV", style = "background-color: #28a745;"),
                             uiOutput("pdf"),
+                            maximizable = T,
+                            collapsed = T,
                             width = 12
-                            )
+                            ), 
+                           title = "Generated PDF",
+                           content = "This is a pdf file created by the tool using your google sheet link. You can expand this to full screen using the tool in the top right."
                            )
+                    )
                 ),
                 fluidRow(HTML('<!-- Show a text ad -->
-                         <div class = "dark raised" data-ea-publisher="openanalysisorg" data-ea-type="image" data-ea-style="stickybox"></div>'))
+                         <div class = "dark raised" id = "CV_tool" data-ea-publisher="openanalysisorg" data-ea-type="image" data-ea-style="stickybox"></div>'))
             )
         )
     )
@@ -116,7 +135,8 @@ server <- function(input, output) {
                     type = "error")
             }
             else{
-                
+                            updateBox("pdf_viewer", action = "toggle")
+                            updateBox("data_viewer", action = "toggle")
                              cv_builder(input$sheet_link)
                              incProgress(1/4)
                              file.copy("AwesomeCV/AwesomeCV.pdf", "www/CV.pdf", overwrite = T)
