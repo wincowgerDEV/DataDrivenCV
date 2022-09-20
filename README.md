@@ -1,6 +1,6 @@
 # An automated way to create a Data Driven CV in a web application. 
 
-Currently online at www.wincowger.shinyapps.io/DataDrivenCV
+Currently online at https://wincowger.shinyapps.io/DataDrivenCV/
 
 Example Spreadsheet: https://docs.google.com/spreadsheets/d/1E3_Z900RAWbRnThNNu-_DXQqZN6qHkD2wN7ZYGmKt34/edit?usp=sharing
 - These fields must be named verbatim: Topic	Subtopic	StartMonth	StartYear	EndMonth	EndYear	SubSubtopic	Location	ShortDescription	LongDescription
