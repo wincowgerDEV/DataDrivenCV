@@ -9,6 +9,7 @@ library(rmarkdown)
 library(tinytex)
 library(digest)
 library(shinyWidgets)
+library(DT)
 
 source("CV_Builder.R")
 
@@ -70,16 +71,24 @@ ui <- dashboardPage(
             tabItem(
                 tabName = "item2",
                 fluidRow(
-                    box(
-                        textInput("sheet_link", "Google Sheet Link", "https://docs.google.com/spreadsheets/d/1E3_Z900RAWbRnThNNu-_DXQqZN6qHkD2wN7ZYGmKt34/edit?usp=sharing"),
-                        actionButton("build_report", "Build CV", icon = icon("file")),
-                        downloadButton("download_report", "Download CV", style = "background-color: #28a745;"),
-                        width = 4
-                    ), 
-                    box(
-                    uiOutput("pdf"),
-                    width = 8
-                    )
+                    column(width = 4, 
+                           box(
+                               textInput("sheet_link", "Google Sheet Link", "https://docs.google.com/spreadsheets/d/1E3_Z900RAWbRnThNNu-_DXQqZN6qHkD2wN7ZYGmKt34/edit?usp=sharing"),
+                               actionButton("build_report", "Build CV", icon = icon("file")),
+                               downloadButton("download_report", "Download CV", style = "background-color: #28a745;"),
+                               width = 4
+                           ),
+                           box(
+                               DT::DTOutput(outputId = "table"),
+                               width = 4
+                           )
+                           ), 
+                    column(width = 8,
+                           box(
+                            uiOutput("pdf"),
+                            width = 8
+                            )
+                           )
                 ),
                 fluidRow(HTML('<!-- Show a text ad -->
                          <div class = "dark raised" data-ea-publisher="openanalysisorg" data-ea-type="image" data-ea-style="stickybox"></div>'))
@@ -94,9 +103,17 @@ server <- function(input, output) {
     
     values <- reactiveVal()
     observeEvent(input$build_report, {
+        withProgress(message = 'CV Generation in Progress',
+                     detail = 'This may take a minute...', min = 0, max = 4, value = 1, {
         if(!testsheet(input$sheet_link)){
-            withProgress(message = 'CV Generation in Progress',
-                         detail = 'This may take a minute...', min = 0, max = 4, value = 1, {
+            if(!all(c("Topic", "Subtopic", "StartMonth",	"StartYear", "EndMonth", "EndYear",	"SubSubtopic",	"Location",	"ShortDescription",	"LongDescription",	"Link") %in% colnames(read_sheet(input$sheet_link)))){
+                show_alert(
+                    title = "Format not supported!",
+                    text = paste0("Column names must be formated as Topic, Subtopic, StartMonth, StartYear, EndMonth, EndYear, SubSubtopic, Location, ShortDescription, LongDescription, Link"),
+                    type = "error")
+            }
+            else{
+                
                              cv_builder(input$sheet_link)
                              incProgress(1/4)
                              file.copy("AwesomeCV/AwesomeCV.pdf", "www/CV.pdf", overwrite = T)
@@ -105,16 +122,16 @@ server <- function(input, output) {
                              incProgress(3/4)
                              values(tags$iframe(style="height:600px; width:100%", src="CV.pdf"))
                              incProgress(4/4)
-                         })
-            
-            
+                         
+            }
         }
         else{
             show_alert(
                 title = "URL not supported!",
                 text = paste0("URL link is not supported, url needs to be a google sheet share link for an open google sheet, please see the example link by reloading the page."),
                 type = "error")
-        }
+            }
+        })
         
     })
     
@@ -122,6 +139,12 @@ server <- function(input, output) {
         req(file.exists("www/CV.pdf"))
         values()
     })
+    
+    output$table <- renderDT({
+        req(values())
+        read_sheet(input$sheet_link)
+        }
+    )
     
     output$download_report <- downloadHandler( 
         filename = function() {"CV.pdf"},
