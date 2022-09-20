@@ -123,7 +123,7 @@ server <- function(input, output) {
                              incProgress(2/4)
                              values(NULL)
                              incProgress(3/4)
-                             values(tags$iframe(style="height:600px; width:100%", src="CV.pdf"))
+                             values(tags$iframe(style="height:100vh; width:100%; scrolling=yes;", src="CV.pdf"))
                              incProgress(4/4)
                          
             }

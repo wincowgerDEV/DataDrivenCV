@@ -7,6 +7,50 @@ library(knitr)
 library(rmarkdown)
 library(tinytex)
 
+
+
+complete_or_incomplete <- function(x){
+    !sum(is.na(x)) %in% c(length(x), 0) 
+}
+
+
+test_consistency <- function(x){ 
+    x %>%
+    group_by(Topic, Subtopic) %>%
+    mutate(complete_StartMonth = complete_or_incomplete(StartMonth),
+           complete_StartYear = complete_or_incomplete(StartYear),
+           complete_EndMonth = complete_or_incomplete(EndMonth),
+           complete_EndYear = complete_or_incomplete(EndYear),
+           complete_SubSubtopic = complete_or_incomplete(SubSubtopic),
+           complete_Location = complete_or_incomplete(Location),
+           complete_ShortDescription = complete_or_incomplete(ShortDescription),
+           complete_LongDescription = complete_or_incomplete(LongDescription),
+           complete_Link = complete_or_incomplete(Link)
+    ) %>%
+    ungroup()
+}
+
+filter_inconsistent <- function(x) {
+    x %>%
+        filter(if_any(starts_with("complete"), ~ .)) 
+}
+
+remove_inconsistent <- function(x){
+    x %>%
+    mutate(
+        StartMonth = ifelse(complete_StartMonth, NA, StartMonth),
+        StartYear = ifelse(complete_StartYear, NA, StartYear),
+        EndMonth = ifelse(complete_EndMonth, NA, EndMonth),
+        EndYear = ifelse(complete_EndYear, NA, EndYear),
+        SubSubtopic = ifelse(complete_SubSubtopic, NA, SubSubtopic),
+        Location = ifelse(complete_Location, NA, Location),
+        ShortDescription = ifelse(complete_ShortDescription, NA, ShortDescription),
+        LongDescription = ifelse(complete_LongDescription, NA, LongDescription),
+        Link = ifelse(complete_Link, NA, Link)
+    ) 
+}
+   
+
 #look <- testsheet("www")
 testsheet <- function(url) {
     tryCatch(
